@@ -107,12 +107,13 @@ class Hadoop(clustersetup.ClusterSetup):
     def __init__(self, hadoop_tmpdir='/mnt/hadoop', map_to_proc_ratio='1.0',
                  reduce_to_proc_ratio='0.3'):
         self.hadoop_tmpdir = hadoop_tmpdir
-        self.hadoop_home = '/usr/lib/hadoop'
+        self.hadoop_home = '/usr/local/hadoop'
         self.hadoop_conf = '/etc/hadoop-0.20/conf.starcluster'
         self.empty_conf = '/etc/hadoop-0.20/conf.empty'
         self.centos_java_home = '/usr/lib/jvm/java'
         self.centos_alt_cmd = 'alternatives'
-        self.ubuntu_javas = ['/usr/lib/jvm/java-6-sun/jre',
+        self.ubuntu_javas = ['/usr/lib/jvm/java-8-oracle/jre/',
+                             '/usr/lib/jvm/java-6-sun/jre',
                              '/usr/lib/jvm/java-6-openjdk/jre',
                              '/usr/lib/jvm/default-java/jre']
         self.ubuntu_alt_cmd = 'update-alternatives'
