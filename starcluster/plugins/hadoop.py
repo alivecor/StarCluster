@@ -107,6 +107,7 @@ class Hadoop(clustersetup.ClusterSetup):
     def __init__(self, hadoop_tmpdir='/mnt/hadoop', map_to_proc_ratio='1.0',
                  reduce_to_proc_ratio='0.3'):
         self.hadoop_tmpdir = hadoop_tmpdir
+        self.hadoop_cmd = '/usr/local/hadoop/bin/hadoop'
         self.hadoop_home = '/usr/local/hadoop'
         self.hadoop_conf = '/usr/local/hadoop/etc/hadoop'
         self.empty_conf = '/usr/local/hadoop/etc/conf.empty'
@@ -211,7 +212,7 @@ class Hadoop(clustersetup.ClusterSetup):
         self._setup_hadoop_dir(node, userdir, user, 'hadoop')
         hdfsdir = posixpath.join(self.hadoop_tmpdir, 'hadoop-hdfs')
         if not node.ssh.isdir(hdfsdir):
-            node.ssh.execute("su hdfs -c 'hadoop namenode -format'")
+            node.ssh.execute("su hdfs -c '%s namenode -format'" % self.hadoop_cmd)
         self._setup_hadoop_dir(node, hdfsdir, 'hdfs', 'hadoop')
 
     def _setup_dumbo(self, node):
