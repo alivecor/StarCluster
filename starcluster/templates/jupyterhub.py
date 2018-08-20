@@ -25,7 +25,7 @@ import socket
 
 # Get hub IP address.  This is not the public IP, it is the private IP in the VPC which is visible to
 # all nodes in the cluster.
-hub_ip_address = socket.gethostbyname(socket.gethostname())
+hub_ip_address = '0.0.0.0'
 
 ## Allow named single-user servers per user
 c.JupyterHub.allow_named_servers = True
