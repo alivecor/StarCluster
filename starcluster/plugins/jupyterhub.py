@@ -11,7 +11,7 @@ class JupyterhubPlugin(clustersetup.DefaultClusterSetup):
     JUPYTERHUB_SERVICE = '/etc/systemd/system/jupyterhub.service'
 
     def __init__(self, homedir='/', notebook_dir=None, oauth_callback_url=None, oauth_client_id=None, oauth_client_secret=None,
-                 hosted_domain=None, login_service=None, user_whitelist='', admin_whitelist='', queue=None, **kwargs):
+                 hosted_domain=None, login_service=None, user_whitelist='', user_map='', admin_whitelist='', queue=None, **kwargs):
         """Constructor.
 
         Args:
@@ -23,6 +23,7 @@ class JupyterhubPlugin(clustersetup.DefaultClusterSetup):
             hosted_domain
             login_service
             user_whitelist
+            user_map
             admin_whitelist
         """
         super(JupyterhubPlugin, self).__init__(**kwargs)
@@ -34,6 +35,7 @@ class JupyterhubPlugin(clustersetup.DefaultClusterSetup):
         self.hosted_domain = hosted_domain
         self.login_service = login_service
         self.user_whitelist = user_whitelist.split(',')
+        self.user_map = user_map.split(',')
         self.admin_whitelist = admin_whitelist.split(',')
         self.queue = queue
 
@@ -59,6 +61,7 @@ class JupyterhubPlugin(clustersetup.DefaultClusterSetup):
             hosted_domain=repr(self.hosted_domain),
             login_service=repr(self.login_service),
             user_whitelist=','.join([repr(u) for u in self.user_whitelist]),
+            user_map=','.join([repr(u) + ':' + repr(v) for u,v in zip(self.user_whitelist, self.user_map)]),
             admin_whitelist=','.join([repr(u) for u in self.admin_whitelist]),
             queue=queue
         )

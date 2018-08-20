@@ -35,6 +35,8 @@ c.JupyterHub.authenticator_class = GoogleOAuthenticator
 c.Authenticator.whitelist = set([%(user_whitelist)s])
 c.Authenticator.admin_users = set([%(admin_whitelist)s])
 
+c.Authenticator.username_map = {%(user_map)s}
+
 c.GoogleOAuthenticator.oauth_callback_url = '%(oauth_callback_url)s'
 c.GoogleOAuthenticator.client_id = '%(oauth_client_id)s'
 c.GoogleOAuthenticator.client_secret = '%(oauth_client_secret)s'
@@ -77,9 +79,9 @@ c.JupyterHub.port = 8000
 
 
 # Monkey patches home directory default.
-def _req_homedir_default(self):
-    return os.path.join('%(homedir)s', self.user.name)
-GridengineSpawner._req_homedir_default = _req_homedir_default
+#def _req_homedir_default(self):
+#    return os.path.join('%(homedir)s', self.user.name)
+#GridengineSpawner._req_homedir_default = _req_homedir_default
 
 c.JupyterHub.spawner_class = ProfilesSpawner
 
