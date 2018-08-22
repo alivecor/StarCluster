@@ -64,7 +64,7 @@ c.JupyterHub.hub_ip = hub_ip_address
 c.JupyterHub.hub_port = 8081
 
 ## The public facing ip of the whole application (the proxy)
-c.JupyterHub.ip = hub_ip_address
+c.JupyterHub.ip = '0.0.0.0'
 
 c.JupyterHub.hub_connect_ip = hub_ip_address
 
