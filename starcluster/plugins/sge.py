@@ -258,6 +258,7 @@ class SGEPlugin(clustersetup.DefaultClusterSetup):
             log.info('Creating GPU queue.')
             gpu_nodes = [node for node in self._nodes if node.is_gpu_compute()]
             self._create_queue('gpu', master, 20, gpu_nodes)
+            self._create_queue('gpu2', master, 20, gpu_nodes)
             # Add master to GPU queue, but disable execution on it.
             if not master.is_gpu_compute():
                 log.info('Disabling master node on gpu.q @gpuhosts')
