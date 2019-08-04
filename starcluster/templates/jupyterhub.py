@@ -87,7 +87,7 @@ c.JupyterHub.spawner_class = ProfilesSpawner
 
 c.Spawner.cmd = ['/usr/local/bin/jupyter-labhub']
 c.Spawner.default_url = '/user/{username}/lab'
-c.Spawner.notebook_dir = '%(notebook_dir)s'
+c.Spawner.notebook_dir = '/data'
 c.Spawner.environment = dict(
     SGE_ROOT='/opt/sge6',
     SGE_CELL='default',
