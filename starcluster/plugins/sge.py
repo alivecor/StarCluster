@@ -113,6 +113,7 @@ class SGEPlugin(clustersetup.DefaultClusterSetup):
         if self.create_gpu_queue and queues_created:
             log.info("Adding parallel environment '%s' to queue 'gpu.q'" % name)
             mssh.execute('qconf -mattr queue pe_list "%s" gpu.q' % name)
+            mssh.execute('qconf -mattr queue pe_list "%s" gpu2.q' % name)
         if self.disable_default_queue:
             log.info("Disabling %s" % queue)
             mssh.execute('qmod -d all.q')
@@ -143,6 +144,10 @@ class SGEPlugin(clustersetup.DefaultClusterSetup):
                 log.info('Adding node to gpu.q')
                 node.ssh.execute('qconf -aattr queue slots "[%s=%d]" gpu.q' % (node.alias, num_slots))
                 node.ssh.execute('qconf -aattr hostgroup hostlist %s @gpuhosts' % node.alias)
+                if num_slots > 1:
+                    log.info('Adding node to gpu2.q')
+                    node.ssh.execute('qconf -aattr queue slots "[%s=%d]" gpu2.q' % (node.alias, num_slots // 2))
+                    node.ssh.execute('qconf -aattr hostgroup hostlist %s @gpu2hosts' % node.alias)
 
     def _sge_path(self, path):
         return posixpath.join(self.SGE_ROOT, path)
@@ -259,6 +264,11 @@ class SGEPlugin(clustersetup.DefaultClusterSetup):
                 node.ssh.execute('qconf -aattr queue slots "[%s=%d]" gpu.q' % (master.alias, 0))
                 node.ssh.execute('qconf -aattr hostgroup hostlist %s @gpuhosts' % master.alias)
                 node.ssh.execute('qmod -d gpu.q@%s' % master.alias)
+                log.info('Disabling master node on gpu2.q @gpu2hosts')
+                node.ssh.execute('qconf -aattr queue slots "[%s=%d]" gpu2.q' % (master.alias, 0))
+                node.ssh.execute('qconf -aattr hostgroup hostlist %s @gpu2hosts' % master.alias)
+                node.ssh.execute('qmod -d gpu2.q@%s' % master.alias)
+
 
     def _remove_from_sge(self, node):
         master = self._master
@@ -273,6 +283,8 @@ class SGEPlugin(clustersetup.DefaultClusterSetup):
         if self.create_gpu_queue and node.is_gpu_compute():
             master.ssh.execute('qconf -dattr hostgroup hostlist %s @gpuhosts' % node.alias)
             master.ssh.execute('qconf -purge queue slots gpu.q@%s' % node.alias)
+            master.ssh.execute('qconf -dattr hostgroup hostlist %s @gpu2hosts' % node.alias)
+            master.ssh.execute('qconf -purge queue slots gpu2.q@%s' % node.alias)
         master.ssh.execute('qconf -dconf %s' % node.alias)
         master.ssh.execute('qconf -de %s' % node.alias)
         node.ssh.execute('pkill -9 sge_execd')
