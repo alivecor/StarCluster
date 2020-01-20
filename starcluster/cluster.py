@@ -402,7 +402,7 @@ class Cluster(object):
                  volumes=[],
                  plugins=[],
                  permissions=[],
-                 inbound_sg_id=None,
+                 src_group_id=None,
                  userdata_scripts=[],
                  refresh_interval=30,
                  disable_queue=False,
@@ -654,7 +654,7 @@ class Cluster(object):
                                        auth_ssh=True,
                                        auth_group_traffic=True,
                                        vpc_id=vpc_id,
-                                       inbound_sg_id=self.inbound_sg_id)
+                                       src_group_id=self.src_group_id)
             self._add_tags_to_sg(sg)
         self._add_permissions_to_sg(sg)
         self._cluster_group = sg
@@ -668,11 +668,15 @@ class Cluster(object):
             from_port = perm.get('from_port')
             to_port = perm.get('to_port')
             cidr_ip = perm.get('cidr_ip', static.WORLD_CIDRIP)
+            src_group_id = perm.get('src_group_id')
+            src_group = None
+            if src_group_id is not None:
+                src_group = self.ec2.get_group_or_none(group_id=src_group_id)
             if not self.ec2.has_permission(sg, ip_protocol, from_port,
-                                           to_port, cidr_ip):
+                                           to_port, cidr_ip, src_group_id=src_group_id):
                 log.info("Opening %s port range %s-%s for CIDR %s" %
                          (ip_protocol, from_port, to_port, cidr_ip))
-                sg.authorize(ip_protocol, from_port, to_port, cidr_ip)
+                sg.authorize(ip_protocol, from_port, to_port, cidr_ip, src_group=src_group)
             else:
                 log.info("Already open: %s port range %s-%s for CIDR %s" %
                          (ip_protocol, from_port, to_port, cidr_ip))

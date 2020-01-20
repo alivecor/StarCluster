@@ -329,6 +329,7 @@ PERMISSION_SETTINGS = {
     'from_port': (int, True, None, None, None),
     'to_port': (int, True, None, None, None),
     'cidr_ip': (str, False, '0.0.0.0/0', None, None),
+    'src_group_id': (str, False, None, None, None),
     # or you're allowing full access to another security group
     # skip this for now...these two options are mutually exclusive to
     # the four settings above and source_group is  less commonly
@@ -354,7 +355,7 @@ CLUSTER_SETTINGS = {
     'volumes': (list, False, [], None, None),
     'plugins': (list, False, [], None, None),
     'permissions': (list, False, [], None, None),
-    'inbound_sg': (str, False, None, None, None),
+    'src_group_id': (str, False, None, None, None),
     'userdata_scripts': (list, False, [], None, __expand_all_in_list),
     'disable_queue': (bool, False, False, None, None),
     'force_spot_master': (bool, False, False, None, None),

@@ -285,7 +285,7 @@ class EasyEC2(EasyAWS):
             s.stop()
 
     def create_group(self, name, description, auth_ssh=False,
-                     auth_group_traffic=False, vpc_id=None, inbound_sg_id=None):
+                     auth_group_traffic=False, vpc_id=None, src_group_id=None):
         """
         Create security group with name/description. auth_ssh=True
         will open port 22 to world (0.0.0.0/0). auth_group_traffic
@@ -301,10 +301,15 @@ class EasyEC2(EasyAWS):
                     time.sleep(3)
             finally:
                 s.stop()
+        cidr_ip = static.WORLD_CIDRIP
+        src_group = None
+        if src_group_id is not None:
+            src_group = self.get_group_or_none(group_id=src_group_id)
+            cidr_ip = None
         if auth_ssh:
             ssh_port = static.DEFAULT_SSH_PORT
             sg.authorize(ip_protocol='tcp', from_port=ssh_port,
-                         to_port=ssh_port, cidr_ip=static.WORLD_CIDRIP if inbound_sg_id is None else inbound_sg_id)
+                         to_port=ssh_port, cidr_ip=cidr_ip, src_group=src_group)
         if auth_group_traffic:
             sg.authorize(src_group=sg, ip_protocol='icmp', from_port=-1,
                          to_port=-1)
@@ -325,12 +330,12 @@ class EasyEC2(EasyAWS):
             filters = {'group-name': groupnames}
         return self.get_security_groups(filters=filters)
 
-    def get_group_or_none(self, name):
+    def get_group_or_none(self, group_name=None, group_id=None):
         """
         Returns group with name if it exists otherwise returns None
         """
         try:
-            return self.get_security_group(name)
+            return self.get_security_group(group_name, group_id)
         except exception.SecurityGroupDoesNotExist:
             pass
 
@@ -351,16 +356,20 @@ class EasyEC2(EasyAWS):
                                    vpc_id=vpc_id)
         return sg
 
-    def get_security_group(self, groupname):
+    def get_security_group(self, group_name=None, group_id=None):
         try:
-            return self.get_security_groups(
-                filters={'group-name': groupname})[0]
+            filters = {}
+            if group_name is not None:
+                filters['group-name'] = group_name
+            if group_id is not None:
+                filters['group-id'] = group_id
+            return self.get_security_groups(filters=filters)[0]
         except boto.exception.EC2ResponseError as e:
             if e.error_code == "InvalidGroup.NotFound":
-                raise exception.SecurityGroupDoesNotExist(groupname)
+                raise exception.SecurityGroupDoesNotExist(group_name)
             raise
         except IndexError:
-            raise exception.SecurityGroupDoesNotExist(groupname)
+            raise exception.SecurityGroupDoesNotExist(group_name)
 
     def get_security_groups(self, filters=None):
         """
@@ -387,11 +396,12 @@ class EasyEC2(EasyAWS):
                     continue
             return rule
 
-    def has_permission(self, group, ip_protocol, from_port, to_port, cidr_ip):
+    def has_permission(self, group, ip_protocol, from_port, to_port, cidr_ip, src_group_id):
         """
         Checks whether group has the specified port range permission
-        (ip_protocol, from_port, to_port, cidr_ip) defined
+        (ip_protocol, from_port, to_port, cidr_ip, src_group_id) defined
         """
+        # Todo(dtreiman): check for source security group.
         for rule in group.rules:
             if rule.ip_protocol != ip_protocol:
                 continue
