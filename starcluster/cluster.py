@@ -2073,7 +2073,7 @@ class ClusterValidator(validators.Validator):
                         from_port, to_port,
                         reason="'from_port' must be <= 'to_port'")
             cidr_ip = permission.get('cidr_ip')
-            if not iptools.ipv4.validate_cidr(cidr_ip) or cidr_ip.startswith('sg-'):
+            if not iptools.ipv4.validate_cidr(cidr_ip) and not cidr_ip.startswith('sg-'):
                 raise exception.InvalidCIDRSpecified(cidr_ip)
 
     def validate_ebs_settings(self):
