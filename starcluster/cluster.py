@@ -402,6 +402,7 @@ class Cluster(object):
                  volumes=[],
                  plugins=[],
                  permissions=[],
+                 inbound_sg_id=None,
                  userdata_scripts=[],
                  refresh_interval=30,
                  disable_queue=False,
@@ -652,7 +653,8 @@ class Cluster(object):
                                        description=desc,
                                        auth_ssh=True,
                                        auth_group_traffic=True,
-                                       vpc_id=vpc_id)
+                                       vpc_id=vpc_id,
+                                       inbound_sg_id=self.inbound_sg_id)
             self._add_tags_to_sg(sg)
         self._add_permissions_to_sg(sg)
         self._cluster_group = sg

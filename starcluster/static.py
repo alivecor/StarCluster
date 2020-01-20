@@ -354,6 +354,7 @@ CLUSTER_SETTINGS = {
     'volumes': (list, False, [], None, None),
     'plugins': (list, False, [], None, None),
     'permissions': (list, False, [], None, None),
+    'inbound_sg': (str, False, None, None, None),
     'userdata_scripts': (list, False, [], None, __expand_all_in_list),
     'disable_queue': (bool, False, False, None, None),
     'force_spot_master': (bool, False, False, None, None),

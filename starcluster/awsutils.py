@@ -285,7 +285,7 @@ class EasyEC2(EasyAWS):
             s.stop()
 
     def create_group(self, name, description, auth_ssh=False,
-                     auth_group_traffic=False, vpc_id=None):
+                     auth_group_traffic=False, vpc_id=None, inbound_sg_id=None):
         """
         Create security group with name/description. auth_ssh=True
         will open port 22 to world (0.0.0.0/0). auth_group_traffic
@@ -304,7 +304,7 @@ class EasyEC2(EasyAWS):
         if auth_ssh:
             ssh_port = static.DEFAULT_SSH_PORT
             sg.authorize(ip_protocol='tcp', from_port=ssh_port,
-                         to_port=ssh_port, cidr_ip=static.WORLD_CIDRIP)
+                         to_port=ssh_port, cidr_ip=static.WORLD_CIDRIP if inbound_sg_id is None else inbound_sg_id)
         if auth_group_traffic:
             sg.authorize(src_group=sg, ip_protocol='icmp', from_port=-1,
                          to_port=-1)
