@@ -124,12 +124,17 @@ for host_element in hosts_element:
     for host_value in host_element:
         if host_value.tag == 'queue':
             queue_name = host_value.get('name')
-            queues.append(queue_name)
+            slots = 0
+            for qv in host_value:
+                if qv.name == 'slots':
+                    slots = int(qv.text)
+            if slots > 0:
+                queues.append(queue_name)
     queue = 'cpu.q'
     if 'mem.q' in queues:
         queue = 'mem.q'
     if 'gpu.q' in queues:
-        queue = 'qpu.q'
+        queue = 'gpu.q'
     queue_type = queue.split('.')[0]
     node_queue = '{}@{}'.format(queue, name)
     node_profiles.append(
