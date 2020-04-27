@@ -126,7 +126,7 @@ for host_element in hosts_element:
             queue_name = host_value.get('name')
             slots = 0
             for qv in host_value:
-                if qv.name == 'slots':
+                if qv.get('name') == 'slots':
                     slots = int(qv.text)
             if slots > 0:
                 queues.append(queue_name)
