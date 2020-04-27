@@ -112,7 +112,7 @@ ENV['SGE_QMASTER_PORT'] = '63231'
 ENV['SGE_ROOT'] = '/opt/sge6'
 ENV['SGE_CLUSTER_NAME'] = 'starcluster'
 
-command = '%s -xml -q' % QHOST_PATH
+command = '{} -xml -q'.format(QHOST_PATH)
 result_xml = subprocess.check_output([command], env=ENV, shell=True)
 hosts_element = xml.etree.ElementTree.fromstring(result_xml)
 node_profiles = []
@@ -133,11 +133,11 @@ for host_element in hosts_element:
     queue_type = queue.split('.')[0]
     node_queue = '%s@%s' % (queue, name)
     node_profiles.append(
-        (u'%s (%s)', u'%s_%s' % (queue.replace('.', '_), name.replace('.', '_')), , GridengineSpawner, dict(
-            batch_submit_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qsub -q %s',
-            batch_query_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qstat -q %s -xml',
+        (u'{} ({})'.format(name, queue_type), u'{}_{}' % (queue.replace('.', '_), name.replace('.', '_')), , GridengineSpawner, dict(
+            batch_submit_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qsub -q {}'.format(node_queue),
+            batch_query_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qstat -q {} -xml'.format(node_queue),
             batch_cancel_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qdel {job_id}',
-            hub_connect_ip=hub_ip_address)) % (name, queue_type, node_queue, node_queue)
+            hub_connect_ip=hub_ip_address))
     )
 
 
