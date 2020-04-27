@@ -133,7 +133,7 @@ for host_element in hosts_element:
     queue_type = queue.split('.')[0]
     node_queue = '{}@{}'.format(queue, name)
     node_profiles.append(
-        (u'{} ({})'.format(name, queue_type), u'{}_{}'.format(queue.replace('.', '_'), name.replace('.', '_')), , GridengineSpawner, dict(
+        (u'{} ({})'.format(name, queue_type), u'{}_{}'.format(queue.replace('.', '_'), name.replace('.', '_')), GridengineSpawner, dict(
             batch_submit_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qsub -q {}'.format(node_queue),
             batch_query_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qstat -q {} -xml'.format(node_queue),
             batch_cancel_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qdel {job_id}',
