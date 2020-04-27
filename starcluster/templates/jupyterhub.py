@@ -131,7 +131,7 @@ for host_element in hosts_element:
     if 'gpu.q' in queues:
         queue = 'qpu.q'
     queue_type = queue.split('.')[0]
-    node_queue = '%s@%s' % (queue, name)
+    node_queue = '{}@{}'.format(queue, name)
     node_profiles.append(
         (u'{} ({})'.format(name, queue_type), u'{}_{}' % (queue.replace('.', '_), name.replace('.', '_')), , GridengineSpawner, dict(
             batch_submit_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qsub -q {}'.format(node_queue),
