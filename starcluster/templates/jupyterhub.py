@@ -102,7 +102,7 @@ c.Spawner.environment = dict(
 c.Spawner.http_timeout = 120
 
 
-def get_node_profiles()
+def get_node_profiles():
     QHOST_PATH = '/opt/sge6/bin/linux-x64/qhost'
     
     ENV = dict(os.environ)
