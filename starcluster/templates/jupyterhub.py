@@ -19,7 +19,7 @@
 jupyterhub_config_template = """
 from oauthenticator.google import GoogleOAuthenticator
 from batchspawner import GridengineSpawner
-from wrapspawner import ProfilesSpawner
+from wrapspawner import SGEProfilesSpawner
 import os
 import socket
 import subprocess
@@ -84,7 +84,8 @@ def _req_homedir_default(self):
     return os.path.join('%(homedir)s', self.user.name)
 GridengineSpawner._req_homedir_default = _req_homedir_default
 
-c.JupyterHub.spawner_class = ProfilesSpawner
+
+c.JupyterHub.spawner_class = SGEProfilesSpawner
 
 c.Spawner.cmd = ['/usr/local/bin/jupyter-labhub']
 c.Spawner.default_url = '/user/{username}/lab'
@@ -102,7 +103,7 @@ c.Spawner.environment = dict(
 c.Spawner.http_timeout = 120
 
 
-def get_node_profiles():
+def get_host_profiles():
     QHOST_PATH = '/opt/sge6/bin/linux-x64/qhost'
     
     ENV = dict(os.environ)
@@ -148,8 +149,7 @@ def get_node_profiles():
     return node_profiles
 
 
-def get_profiles():
-    return [
+c.SGEProfilesSpawner.default_profiles = [
         (u'General Purpose (1 CPU)', u'cpu_lab', GridengineSpawner, dict(
             batch_submit_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qsub -q cpu.q',
             batch_query_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qstat -q cpu.q -xml',
@@ -168,10 +168,11 @@ def get_profiles():
             batch_cancel_cmd='sudo -u {username} -E /opt/sge6/bin/linux-x64/qdel {job_id}',
             hub_connect_ip=hub_ip_address
         ))
-    ] + get_node_profiles()
+    ]
 
 
-c.ProfilesSpawner.profiles = get_profiles
+c.SGEProfilesSpawner.sge_host_profiles = get_host_profiles
+
 
 ## Path to SSL certificate file for the public facing interface of the proxy
 #  
