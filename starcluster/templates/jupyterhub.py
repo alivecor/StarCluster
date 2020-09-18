@@ -98,7 +98,7 @@ c.Spawner.environment = dict(
     XDG_RUNTIME_DIR='',
     JUPYTER_ENABLE_LAB='yes'
 )
-c.Spawner.http_timeout = 120
+c.Spawner.http_timeout = 180
 
 
 c.SGEProfilesSpawner.default_profiles = [
