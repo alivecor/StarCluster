@@ -480,7 +480,7 @@ class Node(object):
         shell - optional shell assign to new user (default: bash)
         """
         if gid:
-            self.ssh.execute('groupadd -o -g %s %s' % (gid, name))
+            self.ssh.execute('groupadd -f -o -g %s %s' % (gid, name))
         user_add_cmd = 'useradd -o '
         if uid:
             user_add_cmd += '-u %s ' % uid
@@ -488,8 +488,8 @@ class Node(object):
             user_add_cmd += '-g %s ' % gid
         if shell:
             user_add_cmd += '-s `which %s` ' % shell
-        user_add_cmd += "-m %s" % name
-        self.ssh.execute(user_add_cmd)
+        user_add_cmd += '-m %s' % name
+        self.ssh.execute(user_add_cmd + '|| echo "User already exists."')
 
     def generate_key_for_user(self, username, ignore_existing=False,
                               auth_new_key=False, auth_conn_key=False):
