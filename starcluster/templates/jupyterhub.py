@@ -33,8 +33,8 @@ c.JupyterHub.allow_named_servers = True
 
 c.JupyterHub.authenticator_class = GoogleOAuthenticator
 
-c.Authenticator.whitelist = set([%(user_whitelist)s])
-c.Authenticator.admin_users = set([%(admin_whitelist)s])
+c.Authenticator.allowed_users = {%(user_whitelist)s}
+c.Authenticator.admin_users = {%(admin_whitelist)s}
 
 c.GoogleOAuthenticator.oauth_callback_url = '%(oauth_callback_url)s'
 c.GoogleOAuthenticator.client_id = '%(oauth_client_id)s'
