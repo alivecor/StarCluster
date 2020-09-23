@@ -85,9 +85,9 @@ GridengineSpawner._req_homedir_default = _req_homedir_default
 
 c.JupyterHub.spawner_class = SGEProfilesSpawner
 
-#c.Spawner.cmd = ['/usr/local/bin/jupyterhub-singleuser']
+c.Spawner.cmd = ['jupyterhub-singleuser', '--base-url=/user/{username}/']
 c.Spawner.debug = True
-c.Spawner.default_url = '/lab'
+c.Spawner.default_url = '/user/{username}/lab'
 c.Spawner.notebook_dir = '%(notebook_dir)s'
 c.Spawner.environment = dict(
     SGE_ROOT='/opt/sge6',
