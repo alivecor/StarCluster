@@ -7,7 +7,7 @@ from starcluster.templates import jupyterhub
 
 
 class JupyterhubPlugin(clustersetup.DefaultClusterSetup):
-    JUPYTERHUB_CONF = '/etc/jupyterhub/jupyterhub_conf.py'
+    JUPYTERHUB_CONF = '/etc/jupyterhub/jupyterhub_config.py'
     JUPYTERHUB_SERVICE = '/etc/systemd/system/jupyterhub.service'
 
     def __init__(self, homedir='/', notebook_dir=None, oauth_callback_url=None, oauth_client_id=None, oauth_client_secret=None,
