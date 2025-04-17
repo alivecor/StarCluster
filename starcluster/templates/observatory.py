@@ -21,7 +21,7 @@ install_script= """
 
 /bin/mkdir -p /etc/starcluster
 
-/usr/local/bin/pip2 install git+https://github.com/dantreiman/StarCluster.git --upgrade
+/usr/local/bin/pip2 install git+https://github.com/alivecor/StarCluster.git --upgrade
 
 if [ -d /opt/starcluster-observatory ]
 then
@@ -29,7 +29,10 @@ then
     cd /opt/starcluster-observatory/ && /usr/bin/git pull
 else
     # Clone latest stable version.
-    /usr/bin/git clone https://github.com/dantreiman/starcluster-observatory.git /opt/starcluster-observatory
+    /usr/bin/git clone https://github.com/alivecor/starcluster-observatory.git /opt/starcluster-observatory
+    cd /opt/starcluster-observatory
+    # hardcode specific commit to avoid unplanned updates
+    git checkout f1585840f5fa712d58313bd1ff620fa48a23d241
 fi
 """
 
